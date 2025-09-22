@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Dashboard Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #results { margin-top: 20px; padding: 10px; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>College Dashboard Complete Test</h1>
+    
+    <div class="test-section">
+        <h3>Step 1: Clear Cookies</h3>
+        <button onclick="clearCookies()">Clear All Cookies</button>
+        <p>Clear any existing authentication cookies first.</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Step 2: Test College Login</h3>
+        <button onclick="testCollegeLogin()">Test College Login API</button>
+        <p>Test the college authentication.</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Step 3: Test Dashboard Access</h3>
+        <button onclick="testDashboardAccess()">Test College Dashboard</button>
+        <p>Test if the college dashboard loads properly.</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Step 4: Manual Login Test</h3>
+        <button onclick="goToLogin()">Go to Login Page</button>
+        <p>Manually login with: <strong>collage / collage@123</strong></p>
+    </div>
+    
+    <div id="results">
+        <h3>Test Results:</h3>
+        <div id="output">Click buttons above to run tests...</div>
+    </div>
+    
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            output.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+        
+        function clearCookies() {
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            log('All cookies cleared successfully!', 'success');
+        }
+        
+        async function testCollegeLogin() {
+            try {
+                log('Testing college login...', 'info');
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: 'collage', password: 'collage@123' })
+                });
+                
+                const data = await response.json();
+                if (data.ok && data.role === 'collage') {
+                    log('✅ College login successful! Role: ' + data.role, 'success');
+                } else {
+                    log('❌ College login failed: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                log('❌ Login test error: ' + error.message, 'error');
+            }
+        }
+        
+        async function testDashboardAccess() {
+            try {
+                log('Testing college dashboard access...', 'info');
+                const response = await fetch('/dashboard/collage');
+                
+                if (response.ok) {
+                    log('✅ College dashboard accessible! Status: ' + response.status, 'success');
+                } else {
+                    log('❌ Dashboard access failed! Status: ' + response.status, 'error');
+                }
+            } catch (error) {
+                log('❌ Dashboard test error: ' + error.message, 'error');
+            }
+        }
+        
+        function goToLogin() {
+            log('Redirecting to login page...', 'info');
+            window.location.href = '/login';
+        }
+        
+        // Auto-run initial test
+        window.onload = function() {
+            log('College Dashboard Test Suite Ready', 'info');
+            log('Use credentials: collage / collage@123', 'info');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Cookies - Alumni Platform</title>
+</head>
+<body>
+    <h1>Clear Authentication Cookies</h1>
+    <p>Click the button below to clear all authentication cookies and start fresh:</p>
+    <button onclick="clearCookies()">Clear Cookies</button>
+    <p id="status"></p>
+    
+    <script>
+        function clearCookies() {
+            // Clear auth-role cookie
+            document.cookie = "auth-role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            
+            // Clear all cookies for this domain
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            document.getElementById('status').innerHTML = '<span style="color: green;">Cookies cleared! You can now login fresh.</span>';
+            
+            // Redirect to login after 2 seconds
+            setTimeout(function() {
+                window.location.href = '/login';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
